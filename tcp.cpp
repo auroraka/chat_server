@@ -180,27 +180,24 @@ void Tcp::dealInfo(int id,QString info){
         }
         sendInfo(id,"reply_require_linkman",info);
     }else if (head=="require_newchat"){
-        QString account;
+        QString account,info;
         stream>>account;
-        int now;
-        findUser(account);
+        int now=findUser(account);
+        QTextStream sm(&info);
         if (now!=-1){
-            sendInfo(now,"newchat_request",userL[i].account);
-            sendInfo(id,"newchat_request",account);
-        }
-//        if (now==-1){
-//            //sendInfo(id,"reply_require_newchat","fail");
-//        }else{
+            info="";
+            sm<<"\n"<<userL[now].account<<"\n";
+            sm<<"\n"<<userL[now].nickname<<"\n";
+            sm<<"\n"<<userL[now].sign<<"\n";
+            sendInfo(id,"newchat_request",info);
 
-//            QString info;
-//            QTextStream sm(&info);
-//            sm<<"\n"<<"success"<<"\n";
-//            sm<<"\n"<<userL[now].account<<"\n";
-//            sm<<"\n"<<userL[now].nickname<<"\n";
-//            sm<<"\n"<<userL[now].sign<<"\n";
-//            sendInfo(id,"reply_require_newchat",info);
-//        }
-    }else if (head=="talking_message"){
+            info="";
+            sm<<"\n"<<userL[id].account<<"\n";
+            sm<<"\n"<<userL[id].nickname<<"\n";
+            sm<<"\n"<<userL[id].sign<<"\n";
+            sendInfo(now,"newchat_request",info);
+        }
+    }/*else if (head=="talking_message"){
         QString account,info;
         stream>>account,info;
         int now=findUser(account);
@@ -215,5 +212,6 @@ void Tcp::dealInfo(int id,QString info){
             sm<<"\n"<<userL[now].sign<<"\n";
             sendInfo(id,"talking_info",info);
         }
-    }
+    }else if (head=="newchat_request")*/
+
 }
